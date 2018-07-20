@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 	"unicode/utf8"
@@ -136,8 +137,17 @@ func (f *File) Write(writer io.Writer) (err error) {
 	if err != nil {
 		return
 	}
+	var names []string
+	for k := range parts {
+		names = append(names, k)
+	}
+	sort.Strings(names)
 	zipWriter := zip.NewWriter(writer)
-	for partName, part := range parts {
+	for _, partName := range names {
+		part, ok := parts[partName]
+		if !ok {
+			continue
+		}
 		w, err := zipWriter.Create(partName)
 		if err != nil {
 			return err

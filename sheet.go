@@ -324,7 +324,9 @@ func (s *Sheet) makeXLSXSheet(refTable *RefTable, styles *xlsxStyleSheet) *xlsxW
 				panic(errors.New("unknown cell type cannot be marshaled"))
 			}
 
-			xRow.C = append(xRow.C, xC)
+			if xC.V != "" {
+				xRow.C = append(xRow.C, xC)
+			}
 
 			if cell.HMerge > 0 || cell.VMerge > 0 {
 				// r == rownum, c == colnum
